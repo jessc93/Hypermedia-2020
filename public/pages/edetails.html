@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <title>Artistic Event</title>
+  </head>
+  <body>
+    <div id="loadHeader"></div>
+    <div id="edetails-container" class="container">
+      <div class="row">
+        <div class="offset-sm-2 col-sm-8">
+          <h3 id="event-title"></h3>
+          <img id="event-image" />
+          <h4>Date</h4>
+          <p id="event-date"></p>
+          <h4>Abstract</h4>
+          <p id="event-abstract"></p>
+          <h4>Factsheet</h4>
+          <p id="event-factsheet"></p>
+          <h4>Price</h4>
+          <p id="event-price"></p>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div id="performers-row" class="row">
+        <div class="col-0 col-sm-2"></div>
+        <div class="col-sm-8">
+          <h4>Performed by:</h4>
+
+          <div class="container">
+            <div id="performers-content" class="row"></div>
+          </div>
+        </div>
+        <!-- LIST OF PERFORMERS THAT PERFORMED THE CURRENT ARTISTIC EVENT  [1-N] N>=1-->
+      </div>
+      <div id="seminar-row" class="row">
+        <div class="col-0 col-sm-2"></div>
+        <div class="col-sm-8">
+          <h4>Discussed in:</h4>
+
+          <div class="container">
+            <div id="seminar-content" class="row"></div>
+          </div>
+        </div>
+        <!-- LIST OF PERFORMERS THAT PERFORMED THE CURRENT ARTISTIC EVENT  [1-N] N>=1-->
+      </div>
+      <div id="samedate-row" class="row">
+        <div class="col-0 col-sm-2"></div>
+        <div class="col-sm-8">
+          <h4>In the same day:</h4>
+
+          <div class="container">
+            <div id="samedate-content" class="row"></div>
+          </div>
+        </div>
+        <!-- LIST OF PERFORMERS THAT PERFORMED THE CURRENT ARTISTIC EVENT  [1-N] N>=1-->
+      </div>
+    </div>
+  </body>
+  <style>
+    img {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    body {
+      margin-bottom: 40px;
+    }
+    .container a {
+      margin: 20px 0;
+    }
+  </style>
+  <script>
+    $('#loadHeader').load('./components/header.html');
+
+    function isLogged() {
+      let id = localStorage.getItem('session-id');
+      let token = localStorage.getItem('session-token');
+      return id && token;
+    }
+    function getUrlParam(parameter, defaultvalue) {
+      var urlparameter = defaultvalue;
+      if (window.location.href.indexOf(parameter) > -1) {
+        urlparameter = getUrlVars()[parameter];
+      }
+      return urlparameter;
+    }
+
+    function goToDetails(id) {
+      window.location.href = 'pdetails?id=' + id;
+    }
+
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
+          vars[key] = value;
+        },
+      );
+      return vars;
+    }
+
+    async function addToCart(eventID) {
+      await fetch('./api/cart/add', {
+        method: 'post',
+        body: JSON.stringify({
+          user_id: +localStorage.getItem('session-id'),
+          token: localStorage.getItem('session-token'),
+          eventId: eventID,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      window.location.href = './cart';
+    }
+
+    getEventDetails();
+
+    function getEventDetails() {
+      const id = getUrlParam('id', 0);
+      fetch('./api/artistic/' + id)
+        .then((tojson) => tojson.json())
+        .then((data) => {
+          const artistic = data.artistic;
+          const seminar = data.seminar;
+          const performers = data.performers;
+          const sameDate = data.sameDate;
+          // Event details
+          document.getElementById('event-title').innerHTML += artistic.title;
+          document.getElementById('event-abstract').innerHTML +=
+            artistic.abstract;
+          document.getElementById('event-factsheet').innerHTML +=
+            artistic.factsheet;
+          document.getElementById('event-price').innerHTML +=
+            artistic.price + '$';
+          document.getElementById('event-date').innerHTML += new Date(
+            artistic.date,
+          ).toLocaleDateString();
+          document.getElementById('event-image').src = artistic.image;
+          // Performers
+          let performerContent = document.getElementById('performers-content');
+          if (performers.length > 0) {
+            // performerContent.style.display = 'block';
+            for (let p of performers) {
+              performerContent.innerHTML += `<div class="col-12 col-md-6 card" style="">
+            <div style="background-image: url('${p.image}'); 
+            background-size: cover; height: 200px;"></div>
+            <div class="card-body">
+              <h5 class="card-title">${p.name}</h5>
+              <button onclick="goToDetails(${p.id})" class="btn btn-primary">Read More</a>
+            </div>
+          </div>`;
+            }
+          } else {
+            document.getElementById('performers-row').style.display = 'none';
+          }
+
+          // Seminars
+          let seminarContent = document.getElementById('seminar-content');
+          if (seminar) {
+            seminarContent.innerHTML += `<a href="sdetails?id=${seminar.id}">${seminar.title}</a>`;
+          } else {
+            document.getElementById('seminar-row').style.display = 'none';
+          }
+
+          // Same date
+          let sameDateContent = document.getElementById('samedate-content');
+          if (sameDate.length) {
+            for (let sd of sameDate) {
+              sameDateContent.innerHTML += `<a href="edetails?id=${sd.id}">${sd.title}</a>`;
+            }
+          } else {
+            document.getElementById('samedate-row').style.display = 'none';
+          }
+
+          //if (isLogged()) {
+          let container = document.getElementById('edetails-container');
+          container.innerHTML += `<div class="row" style="margin-bottom: 20px"><div class="offset-sm-2 col-sm-8">
+            <button onclick="addToCart(${id})" class="btn btn-success">+ Add to Cart</button>
+            </div></div>`;
+          //}
+        });
+    }
+  </script>
+</html>

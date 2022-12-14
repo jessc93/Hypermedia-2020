@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <title>Seminar</title>
+  </head>
+
+  <body>
+    <div id="loadHeader"></div>
+    <div id="sdetails-container" class="container">
+      <div class="row">
+        <div class="offset-sm-2 col-sm-8">
+          <h3 id="event-title"></h3>
+          <img id="event-image" />
+          <h4>Date</h4>
+          <p id="event-date"></p>
+          <h4>Location</h4>
+          <p id="event-location"></p>
+          <h4>Abstract</h4>
+          <p id="event-abstract"></p>
+        </div>
+      </div>
+      <div id="artistics-row" class="row">
+        <div class="col-0 col-sm-2"></div>
+        <div class="col-sm-8">
+          <h4>Discusses:</h4>
+          <div class="container">
+            <div id="artistics-content" class="row"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+  <style>
+    img {
+      margin-bottom: 10px;
+      width: 100%;
+    }
+    body {
+      margin-bottom: 40px;
+    }
+  </style>
+  <script>
+    $('#loadHeader').load('./components/header.html');
+
+    function isLogged() {
+      return String(localStorage.getItem('session-id')).length > 0;
+    }
+    function getUrlParam(parameter, defaultvalue) {
+      var urlparameter = defaultvalue;
+      if (window.location.href.indexOf(parameter) > -1) {
+        urlparameter = getUrlVars()[parameter];
+      }
+      return urlparameter;
+    }
+
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
+          vars[key] = value;
+        },
+      );
+      return vars;
+    }
+
+    function goToDetails(id) {
+      window.location.href = 'edetails?id=' + id;
+    }
+
+    getSeminarDetails();
+    function getSeminarDetails() {
+      const id = getUrlParam('id', 0);
+      fetch('./api/seminar/' + id)
+        .then((tojson) => tojson.json())
+        .then((data) => {
+          const seminar = data.seminar;
+          const artistics = data.artistic;
+          document.getElementById('event-title').innerHTML += seminar.title;
+          document.getElementById('event-abstract').innerHTML +=
+            seminar.abstract;
+          document.getElementById('event-date').innerHTML += new Date(
+            seminar.date,
+          ).toLocaleDateString();
+          document.getElementById('event-image').src = seminar.image;
+          document.getElementById('event-location').innerHTML +=
+            seminar.location;
+
+          let artisticsContent = document.getElementById('artistics-content');
+          if (artistics) {
+            for (let a of artistics) {
+              artisticsContent.innerHTML += `<div class="col-12 card" style="">
+            <div style="background-image: url('${a.image}'); 
+            background-size: cover; height: 200px;"></div>
+            <div class="card-body">
+              <h5 class="card-title">${a.title}</h5>
+              <p class="card-text">${a.abstract}</p>
+              <button onclick="goToDetails(${a.id})" class="btn btn-primary">Read More</a>
+            </div>
+          </div>`;
+            }
+          } else {
+          }
+        });
+    }
+  </script>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+
+    <title>Cart</title>
+  </head>
+  <body>
+    <div id="loadHeader"></div>
+    <div class="container">
+      <h3>Your Cart</h3>
+      <div id="cart-list" class="row"></div>
+      <button onclick="pay()" class="btn btn-primary pay-button">Pay</button>
+    </div>
+  </body>
+  <style>
+    .pay-button {
+      margin: 20px;
+      padding: 10px 80px;
+    }
+    .container {
+      text-align: center;
+    }
+  </style>
+  <script>
+    $('#loadHeader').load('./components/header.html');
+
+    checkLogged();
+
+    function checkLogged() {
+      const id = localStorage.getItem('session-id');
+      if (!id) {
+        window.location.href = './login';
+      }
+    }
+
+    async function removeTicket(id) {
+      await fetch('./api/cart/remove', {
+        method: 'delete',
+        body: JSON.stringify({
+          token: localStorage.getItem('session-token'),
+          user_id: localStorage.getItem('session-id'),
+          deleteId: id,
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+      window.location.reload();
+    }
+
+    function pay() {
+      fetch('/api/cart/pay', {
+        method: 'post',
+        body: JSON.stringify({
+          token: localStorage.getItem('session-token'),
+          user_id: localStorage.getItem('session-id'),
+        }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }).then((data) => {
+        window.location.reload();
+      });
+    }
+
+    const listContainer = document.getElementById('cart-list');
+    fetch('./api/cart/show', {
+      method: 'post',
+      body: JSON.stringify({
+        token: localStorage.getItem('session-token'),
+        user_id: localStorage.getItem('session-id'),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((data) => {
+        return data.json();
+      })
+      .then((arr) => {
+        arr.map((event) => {
+          const template = `<div class="col-12 col-sm-6 col-lg-4 card" style="">
+            <div style="background-image: url('${event.data.image}');
+            background-size: cover; height: 200px;"></div>
+            <div class="card-body">
+              <h5 class="card-title">${event.data.title}</h5>
+              <p class="card-text">Count x${event.count}</p>
+              <p class="card-text">Price: ${event.data.price *
+                event.count} $</p>
+              <button onclick='removeTicket(${
+                event.data.id
+              })' class="btn btn-danger">Remove</a>
+            </div>
+          </div>`;
+          listContainer.innerHTML += template;
+        });
+      });
+  </script>
+</html>

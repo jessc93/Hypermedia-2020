@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous" />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <title>Event Reservation</title>
+</head>
+
+<body>
+    <div id="loadHeader"></div>
+    <div class="container slider">
+        <h3>How to make a reservation</h3>
+        <p>
+        To book an event, you must register on our website. Within the site, you can select the artistic events through a chosen
+        date or through the categories music, theater, opera and dance. Once you register, then search for your chosen event.
+        Each event has the following information: event name, place, start date and time, event details and a "book now" button.
+        To continue, click the button. At this point you can choose between the two purchase options if both are activated:
+        <br>
+        In the shopping cart you can access the Shopping Cart section where you can find the product you are purchasing and from
+        which you can perform other operations. To continue select the shipping option, log on to the site if you are already
+        registered or proceed to a registration
+        <br>
+        Please check that all data entered is correct: your name and address, delivery address and your account or credit card
+        details. You will be shown all the details of your order, after which you can send it to us by clicking on "Payment".
+        Your order will be sent to us, the tickets will be booked in a binding manner and you will receive a purchase
+        confirmation with your order number directly to the e-mail address provided.
+        <br>
+        Your order number must be indicated if you are making enquiries to the Customer Service. Please note that without a
+        receipt of payment, you will not be able to access the events.
+        <br>
+        In addition, it will not be necessary to book public seminars, as they are kindly offered by our sponsors.
+        </p>
+        <br>
+        <h3>How to buy a ticket</h3>
+        <p>
+        Buy tickets for a performance of the Milan Festival directly online in total comfort and safety. To proceed with
+        the purchase, however, register indicating the username and password that you will also use for subsequent purchases.
+        Once you have chosen the show, check if you are entitled to any discounts and proceed with the selection of seats.
+        
+        Complete your purchase by entering your Visa (excluding Electron), MasterCard, American Express or Diners credit card
+        details. At the end of the process you will receive at the address indicated during registration, an email with the
+        confirmation of the charge by UniCredit Bank and the confirmation of purchase, called Print at Home, by Geticket
+        Customer Service do_not_reply@getXXXticket.it. If you do not request the shipment of tickets, the Print at Home is the valid
+        access ticket for the show.
+        
+        Alternatively, you can request the shipment of tickets by express courier for a fee* up to 10 working days before the
+        chosen show.
+        </p>        
+    </div>
+</body>
+<style>
+    .slider {
+        max-width: 690px;
+    }
+
+    .main-content {
+        margin-top: 20px;
+    }
+
+    @media screen and (max-width: 766px) {
+        .slider {
+            max-width: 100%;
+            padding: 0;
+        }
+    }
+</style>
+<script>
+    $('#loadHeader').load('./components/header.html');
+</script>
+
+</html>

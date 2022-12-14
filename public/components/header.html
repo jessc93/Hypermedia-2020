@@ -1,0 +1,112 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark">
+  <a class="navbar-brand" href="/">TransArt</a>
+  <button
+    class="navbar-toggler"
+    type="button"
+    data-toggle="collapse"
+    data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup"
+    aria-expanded="false"
+    aria-label="Toggle navigation"
+  >
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <div class="nav-item nav-left">
+        <a class="nav-item nav-link" href="/">Home </a>
+        <a class="nav-item nav-link" href="/performers">Performers</a>
+        <a class="nav-item nav-link" href="/events">Events</a>
+        <!--a class="nav-item nav-link" href="/seminars">Seminars</a-->
+        <a class="nav-item nav-link" href="/calendar">Calendar</a>
+      </div>
+
+      <div id="unlogged-right">
+        <a href="./signin" class="btn btn-outline-primary my-2 my-sm-0">
+          Sign In
+        </a>
+        <a href="./login" class="btn btn-success my-2 my-sm-0">
+          Log In
+        </a>
+      </div>
+      <div id="logged-right">
+        <span id="user-name"></span>
+        <a href="./cart" class="btn btn-outline-warning my-2 my-sm-0">
+          My Cart
+        </a>
+        <button onclick="logout()" class="btn btn-danger my-2 my-sm-0">
+          Logout
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<style>
+  body  {
+    margin-top: 20px;
+  }
+  #loadHeader {
+    padding-top: 56px;
+  }
+  .navbar {
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    top: 0;
+  }
+  .nav-left {
+    display: inline-flex;
+  }
+  .navbar-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+  #user-name {
+    color: white;
+    margin-right: 20px;
+  }
+  @media screen and (max-width: 766px) {
+    .nav-left {
+      display: block;
+      width: 100%;
+    }
+  }
+</style>
+
+<script>
+  function checkIfLogged() {
+    const id = localStorage.getItem('session-id');
+    const token = localStorage.getItem('session-token');
+    const name = localStorage.getItem('session-name');
+    if (id && token && name) {
+      // Show cart and profile information
+      document.getElementById('unlogged-right').style.display = 'none';
+      document.getElementById('user-name').innerHTML = 'Hi, ' + name;
+    } else {
+      // Show login and signin buttons
+      document.getElementById('logged-right').style.display = 'none';
+    }
+  }
+
+  function logout() {
+    fetch('./api/auth/logout', {
+      method: 'post',
+      body: JSON.stringify({
+        user_id: localStorage.getItem('session-id'),
+        token: localStorage.getItem('session-token'),
+      }),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    }).then((json) => {
+      localStorage.removeItem('session-id');
+      localStorage.removeItem('session-token');
+      localStorage.removeItem('session-name');
+      window.location.reload();
+    });
+  }
+
+  checkIfLogged();
+</script>

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+      integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+      crossorigin="anonymous"
+    ></script>
+    <title>Performer</title>
+  </head>
+  <body>
+    <div id="loadHeader"></div>
+    <div class="container">
+      <div class="row">
+        <div class="offset-sm-2 col-sm-8">
+          <h3 id="performer-name"></h3>
+          <img id="performer-image" />
+          <p id="performer-affiliation"></p>
+          <p id="performer-achievement"></p>
+          <p id="performer-members"></p>
+          <h4>Details</h4>
+          <p id="performer-details"></p>
+        </div>
+      </div>
+      <div id="artistics-row" class="row">
+        <div class="col-0 col-sm-2"></div>
+        <div class="col-sm-8">
+          <h4>Performs:</h4>
+          <div class="container">
+            <div id="artistics-content" class="row"></div>
+          </div>
+        </div>
+        <!-- LIST OF PERFORMERS THAT PERFORMED THE CURRENT ARTISTIC EVENT  [1-N] N>=1-->
+      </div>
+    </div>
+  </body>
+  <style>
+    img {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+    body {
+      margin-bottom: 40px;
+    }
+  </style>
+  <script>
+    $('#loadHeader').load('./components/header.html');
+
+    function getUrlParam(parameter, defaultvalue) {
+      var urlparameter = defaultvalue;
+      if (window.location.href.indexOf(parameter) > -1) {
+        urlparameter = getUrlVars()[parameter];
+      }
+      return urlparameter;
+    }
+
+    function goToDetails(id) {
+      window.location.href = 'edetails?id=' + id;
+    }
+
+    function getUrlVars() {
+      var vars = {};
+      var parts = window.location.href.replace(
+        /[?&]+([^=&]+)=([^&]*)/gi,
+        function(m, key, value) {
+          vars[key] = value;
+        },
+      );
+      return vars;
+    }
+
+    getPerformerDetails();
+    function getPerformerDetails() {
+      const id = getUrlParam('id', 0);
+      fetch('./api/performer/' + id)
+        .then((tojson) => tojson.json())
+        .then((data) => {
+          const artistics = data.artistics;
+          const performer = data.performer;
+          document.getElementById('performer-name').innerHTML += performer.name;
+
+          const members = document.getElementById('performer-members');
+          const affiliation = document.getElementById('performer-affiliation');
+          const achievement = document.getElementById('performer-achievement');
+
+          if (data.isGroup) {
+            members.innerHTML += `<h4>Company members</h4> ${performer.members}`;
+            members.style.display = 'block';
+            affiliation.style.display = 'none';
+            achievement.style.display = 'none';
+          } else {
+            affiliation.innerHTML += `<h4>Current affiliation</h4> ${performer.affiliation}`;
+            affiliation.style.display = 'block';
+            achievement.innerHTML += `<h4>Main achievements</h4> ${performer.achievement}`;
+            achievement.style.display = 'block';
+            members.style.display = 'none';
+          }
+          document.getElementById('performer-details').innerHTML +=
+            performer.details;
+          document.getElementById('performer-image').src = performer.image;
+
+          let artisticContent = document.getElementById('artistics-content');
+
+          if (artistics) {
+            if (artistics.length > 0) {
+              // performerContent.style.display = 'block';
+              for (let a of artistics) {
+                artisticContent.innerHTML += `<div class="col-12 col-md-6 card" style="">
+              <div style="background-image: url('${a.image}'); 
+              background-size: cover; height: 200px;"></div>
+              <div class="card-body">
+                <h5 class="card-title">${a.title}</h5>
+                <button onclick="goToDetails(${a.id})" class="btn btn-primary">Read More</a>
+              </div>
+            </div>`;
+              }
+            } else {
+              document.getElementById('artistics-row').style.display = 'none';
+            }
+          }
+        });
+    }
+  </script>
+</html>

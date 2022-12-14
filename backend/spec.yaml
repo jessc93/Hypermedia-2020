@@ -1,0 +1,499 @@
+---
+swagger: "2.0"
+info:
+  description: "Transart Festival API"
+  version: "1.0.0"
+  title: "Transart Festival"
+  contact:
+    email: "jessica.corrias@mail.polimi.it"
+host: "polimi-hyp-2019-10412442.herokuapp.com"
+basePath: "/api"
+tags:
+- name: "artistic"
+  description: "Artistic events of Transart Festival"
+- name: "performer"
+  description: "Performers at Transart Festival"
+- name: "seminar"
+  description: "Seminars of the Transart Festival"
+- name: "user"
+  description: "Operations about users"
+- name: "cart"
+  description: "Operations about cart"
+- name: "category"
+  description: "All category of all events (artistic or seminar)"
+- name: "auth"
+  description: "Authentication"
+schemes:
+- "https"
+paths:
+  /artistic:
+    get:
+      tags:
+      - "artistic"
+      summary: "List of artistic events"
+      description: "Returns a list of artistic events"
+      operationId: "getAllArtistic"
+      produces: 
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Artistic"
+      x-swagger-router-controller: "Artistic"
+  /artistic/{artisticId}:
+    get:
+      tags:
+      - "artistic"
+      summary: "Artistic event by ID"
+      description: "Returns an artistic event by ID"
+      operationId: "getArtisticById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "artisticId"
+        in: "path"
+        description: "Id of the artistic event"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Artistic"
+        400:
+          description: "Invalid event type"
+      x-swagger-router-controller: "Artistic"
+  /performer:
+    get:
+      tags:
+      - "performer"
+      summary: "List of performers"
+      description: "Returns a list of performers"
+      operationId: "getPerformers"
+      produces: 
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Performer"
+    x-swagger-router-controller: "Artistic"
+  /performer/{performerId}:
+    get:
+      tags:
+      - "performer"
+      summary: "Performer by ID"
+      description: "Returns a performer by ID"
+      operationId: "getPerformerById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "performerId"
+        in: "path"
+        description: "Id of the required performer"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Performer"
+        400:
+          description: "Invalid event type"
+      x-swagger-router-controller: "Artistic"
+  /seminar:
+    get:
+      tags:
+      - "seminar"
+      summary: "List of seminars"
+      description: "Returns a list of public seminars"
+      operationId: "getSeminars"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Seminar"
+      x-swagger-router-controller: "Seminar"
+  /seminar/{seminarId}:
+    get:
+      tags:
+      - "seminar"
+      summary: "Seminar by ID"
+      description: "Returns a public seminar by ID"
+      operationId: "getSeminarById"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "seminarId"
+        in: "path"
+        description: "ID of the seminar"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            $ref: "#/definitions/Seminar"
+        400:
+          description: "Invalid seminar id"
+      x-swagger-router-controller: "Seminar"
+  /user/register:
+    post:
+      tags:
+      - "user"
+      summary: "New user"
+      description: "Registration of new user. Registration on the site allows you to make purchases"
+      operationId: "userRegistration"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "name"
+        in: "formData"
+        description: "Name of the user"
+        required: true
+        type: "string"
+      - name: "email"
+        in: "formData"
+        description: "Email of the user"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "Password of the user"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Successful registration"
+        400:
+          description: "User already registered"
+      x-swagger-router-controller: "User"
+  /cart/show:
+    post:
+      tags:
+      - "cart"
+      summary: "Show cart of current user"
+      operationId: "showCart"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "id"
+        in: "formData"
+        description: "id of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "List of artistic event"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Artistic"
+        400:
+          description: "The cart is empty!"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Cart"
+  /cart/add:
+    post:
+      tags:
+      - "cart"
+      summary: "Add element to the cart of current user"
+      operationId: "addToCart"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "eventId"
+        in: "formData"
+        description: "id of the artistic event"
+        required: true
+        type: "integer"
+      - name: "user_id"
+        in: "formData"
+        description: "id of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "List of artistic event"
+          schema:
+            $ref: "#/definitions/Artistic"
+        400:
+          description: "User already registered"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Cart"
+  /cart/pay:
+    post:
+      tags:
+      - "cart"
+      summary: "Delete all elements from the cart"
+      operationId: "pay"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "id of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Payment"
+        400:
+          description: "Meh"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Cart"
+  /cart/remove:
+    delete:
+      tags:
+      - "cart"
+      summary: "Delete an artistic event from cart"
+      description: "RE"
+      operationId: "remove"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "id of the user"
+        required: true
+        type: "integer"
+      - name: "deleteId"
+        in: "formData"
+        description: "id of the artistic event"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Current user"
+          schema:
+            $ref: "#/definitions/User"
+        400:
+          description: "Meh"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Cart"
+  /auth/login:
+    post:
+      tags:
+      - "auth"
+      summary: "Login"
+      description: "Login method usind Crypto. The defaul user is email prova@prova.it with password test"
+      operationId: "login"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "email"
+        in: "formData"
+        description: "email of the user"
+        required: true
+        type: "string"
+      - name: "password"
+        in: "formData"
+        description: "password of the user"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Autenticato!"
+          schema:
+            $ref: "#/definitions/Auth"
+        400:
+          description: "Meh- errore"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Auth"
+  /auth/logout:
+    post:
+      tags:
+      - "auth"
+      summary: "Logout"
+      description: "Logout method . The defaul user id is 1"
+      operationId: "logout"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "user_id"
+        in: "formData"
+        description: "id of the user"
+        required: true
+        type: "integer"
+      responses:
+        200:
+          description: "Autenticato!"
+        400:
+          description: "Meh- errore"
+        401:
+          description: "Unauthorized"
+        x-swagger-router-controller: "Cart"
+  /category:
+    get:
+      tags:
+      - "category"
+      summary: "List of category of artistic events and seminar"
+      description: "Returns a list of category of artistic events and seminar"
+      operationId: "getAllCategory"
+      produces: 
+      - "application/json"
+      parameters: []
+      responses:
+        200:
+          description: "Successful operation"
+          schema:
+            type: "array"
+            items: 
+              $ref: "#/definitions/Category"
+      x-swagger-router-controller: "Artistic"
+definitions:
+  Artistic:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      title:
+        type: "string"
+      image:
+        type: "string"
+      date:
+        type: "string"
+        format: "date"
+      abstract:
+        type: "string"
+      factsheet:
+        type: "string"
+      price:
+        type: "integer"
+      categoryId:
+        type: "integer"
+        format: "int32"
+    example:
+      id: 1
+      title: "Harry Potter"
+      image: "image.jpg"
+      date: "2000-01-23T00:00:00"
+      abstract: "Abstract about HP"
+      factsheet: "Factsheet about HP"
+      price: 49
+      categoryId: 1
+  Performer:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+      image:
+        type: "string"
+      affiliation:
+        type: "string"
+      achievement:
+        type: "string"
+      details:
+        type: "string"
+      isGroup:
+        type: "integer"
+        format: "boolean"
+      members:
+        type: "string"
+    example:
+      id: 1
+      name: "Aldo Baglio"
+      image: "image.jpg"
+      affiliation: "Aldo, Giovanni e Giacomo"
+      achievement: "string"
+      details: "Il mitico trio"
+      isGroup: true
+      members: "Aldo Baglio, Giovanni Storti, Giacomo Poretti"
+  Seminar:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      title:
+        type: "string"
+      image: 
+        type: "string"
+      date:
+        type: "string"
+        format: "date"
+      abstract:
+        type: "string"
+      location:
+        type: "string"
+    example:
+      id: 1
+      title: "Example Seminar"
+      image: "image.jpg"
+      date: "2000-01-23T00:00:00"
+      abstract: "Abstract about Example Seminar"
+      location: "Location about Example Seminar"
+  User:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      name:
+        type: "string"
+      email:
+        type: "string"
+      password:
+        type: "string"
+    example:
+      id: 1
+      name: "Matteo Berrini"
+      mail: "matteo@gmail.com"
+      password: "provami"
+  Auth:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      token:
+        type: "string"
+  Category:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+    example:
+      id: 1
+      type: "opera"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"

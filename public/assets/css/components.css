@@ -1,0 +1,51 @@
+  body {
+    margin-top: 20px;
+  }
+
+  #loadHeader {
+    padding-top: 56px;
+  }
+
+  .navbar {
+    position: fixed;
+    z-index: 100;
+    width: 100%;
+    top: 0;
+  }
+
+  .nav-left {
+    display: inline-flex;
+  }
+
+  .navbar-nav {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  #user-name {
+    color: white;
+    margin-right: 20px;
+  }
+
+  @media screen and (max-width: 766px) {
+    .nav-left {
+      display: block;
+      width: 100%;
+    }
+  }
+
+.slider {
+    max-width: 690px;
+}
+
+.main-content {
+    margin-top: 20px;
+}
+
+@media screen and (max-width: 766px) {
+    .slider {
+        max-width: 100%;
+        padding: 0;
+    }
+}
