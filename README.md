@@ -1,7 +1,7 @@
 # Transart - Music festival
------
 Final project for the Hypermedia Application (Web and Multimedia) course of the "Computer Science and Engineering - Computer Engineering" degree program at Politecnico di Milano.
 
+---
 ### Project
 The project consists in the development of a website for a summer festival of contemporary performing arts, which contents are about artistic events (music/theatre/opera/dance performances), their performers (single artists, music ensembles, dance or theatre companies) and public seminars that introduce or discuss specific events.
 Any framework or template were not allowed.
