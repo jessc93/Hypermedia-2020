@@ -6,8 +6,6 @@ Final project for the Hypermedia Application (Web and Multimedia) course of the 
 The project consists in the development of a website for a summer festival of contemporary performing arts, which contents are about artistic events (music/theatre/opera/dance performances), their performers (single artists, music ensembles, dance or theatre companies) and public seminars that introduce or discuss specific events.
 Any framework or template were not allowed.
 
-Demo: https://polimi-hyp-2019-10412442.herokuapp.com
-
 #### Specification
 - E-commerce web site
 - Products: Books
