@@ -1,5 +1,5 @@
 # Transart - Music festival
-Final project for the Hypermedia Application (Web and Multimedia) course of the "Computer Science and Engineering - Computer Engineering" degree program at Politecnico di Milano.
+Final project for course of Hypermedia Application (Web and Multimedia) - "Computer Science" Bachelor degree at Politecnico di Milano
 
 ---
 ### Project
@@ -8,17 +8,10 @@ Any framework or template were not allowed.
 
 #### Specification
 - E-commerce web site
-- Products: Books
-- Multimedia contents: about Books and Authors
-    - Each Book is described by a picture, a “fact sheet”, an abstract and a set of reviews
-    - Each Author is described by a picture and a short bio
-- Relevant relationships
-    - Each Book is related to its Author and to a set of Books that are “similar to” it
-    - Each Author is related to his/her books
 - Functionality:
     - Registration
     - Shopping Bag creation/update
-    - Book(s) Reservation
+    - Event(s) Reservation
 
 ## License
 
